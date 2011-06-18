@@ -1,0 +1,7 @@
+{
+	"images" : {
+		"1": "path/to/image/one",
+		"2": "path/to/image/two",
+		"3": "path/to/image/three"
+	}
+}

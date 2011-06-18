@@ -1,0 +1,7 @@
+/* General Template */
+ul,li {margin:0;padding:0;list-style:none;}
+li {list-style:none;float:left;}
+#ipad-views-wrapper {width:100%;height:1024px;overflow-x:hidden;position:relative;}
+#ipad-views {position:absolute;}
+#ipad-views li {width:768px;}
+#ipad-views li img {width:100%;}
