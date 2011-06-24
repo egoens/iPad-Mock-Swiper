@@ -8,23 +8,29 @@
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-touch-fullscreen" content="YES" />
 	<title>iPad Mock Swiper</title>
-	<link rel="stylesheet" type="text/css" href="reset.css" />
-	<link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-ipad.png" />
-	<script type="text/javascript" src="jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="jswipe-0.1.2.js"></script>
-	<script type="text/javascript" src="jorientation.js"></script>
-	<script type="text/javascript" src="main.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/reset.css" />
+	<link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-ipad.png" />
+	<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="js/jswipe-0.1.2.js"></script>
+	<script type="text/javascript" src="js/jorientation.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
 	
-	<link rel="stylesheet" media="all" href="main.css">
-	<link rel="stylesheet" media="all and (orientation:landscape)" href="landscape.css">
+	<link rel="stylesheet" media="all" href="css/main.css">
+	<link rel="stylesheet" media="all and (orientation:landscape)" href="css/landscape.css">
 </head>
 
 <body>
-	<div id="ipad-views-wrapper">
+	<section id="ipad-views-wrapper">
 		<a id="home" href="index.html"></a>
 		<ul id="ipad-views" class="swipe">
 			<!-- json file images will go here -->
 		</ul>
-	</div>
+		<section id="loading">
+			<div id="loading_icon">
+				<h1>Loading...</h1>
+				<!--<img src="ajax-loader.gif" alt="Loading Icon" />-->
+			</div>
+		</section>
+	</section>
 </body>
 </html>

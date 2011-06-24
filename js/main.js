@@ -67,9 +67,13 @@ $(document).ready(function() {
 						
 						// Append images to li if non-existent otherwise change path
 						if($("#ipad-views li:eq("+(curr_li-1)+")").html()=='') {
-					    	$("<img src='"+img_name+"' />").appendTo("#ipad-views li:eq("+(curr_li-1)+")");
+							$("#loading").show();
+					    	$("<img src='"+img_name+"' />").appendTo("#ipad-views li:eq("+(curr_li-1)+")").load(function() {
+								$("#loading").hide();
+							});
 						} else {
 							$("#ipad-views li:eq("+(curr_li-1)+") img").attr({src:img_name});
+							$("#loading").hide();
 						}
 					
 					});

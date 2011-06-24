@@ -5,3 +5,7 @@ li {list-style:none;float:left;}
 #ipad-views {position:absolute;}
 #ipad-views li {width:768px;}
 #ipad-views li img {width:100%;}
+
+/* Loading */
+#loading {width:768px;height:1024px;background:rgba(0,0,0,1);position:absolute;z-index:999;display:none;}
+#loading_icon {margin:450px auto 0 auto;width:200px;height:200px;color:#fff;text-align:center;}
