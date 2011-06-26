@@ -6,8 +6,6 @@ $(document).ready(function() {
 	data_source = '';
 	page_links = '';
 	
-	//$("#loading").show();
-	
 	$.getJSON("images.json",
 
 	  function(data) {
@@ -21,7 +19,7 @@ $(document).ready(function() {
 	});
 	
 	function buildButtons(data) {
-		
+		$("<li><h1>"+data.project["title"]+"</h1></li>").appendTo("#ipad-views");
 		$("<li id='pages'></li>").appendTo("#ipad-views");
 		
 		$.each(data.pages, function(key,value){
@@ -29,11 +27,9 @@ $(document).ready(function() {
 	    });
 	
 		$(page_links).appendTo("#ipad-views li#pages");
-
 	}
 	
 	function buildPages(data) {
-		
 		setupLinks(data);
 	}
 	
@@ -44,7 +40,6 @@ $(document).ready(function() {
 		})
 	}
 	
-	
 	function buildImages(data,pagename) {
 				
 		if(data_source=='pages') {
@@ -53,40 +48,14 @@ $(document).ready(function() {
 			var ds = data.images;
 		}
 		
-		$("#loading").show();
-
-		
-		$.each(ds, function(key,value){
-			$("<li class='image'><img src='" + value + "' /></li>").appendTo("#ipad-views")
-	    });
-
-		// Cheating right now. Want to re-generate list of pages and regenerate html
-		$("<li id='back'><a class='button'>back to menu</a></li>").appendTo("#ipad-views");
-		$("#back a").click(function() {
-			location.reload();
-		})
-
-		// swipe movement functionality
-		var liw = $("#ipad-views li.image:first-child").width();
-		var li_count = $("#ipad-views li").length;
-		$("#ipad-views").width(li_count*liw);
-	
-		$("#ipad-views li.image:last img").load(function() {
-			$("#loading").hide();
-		})
-		
-		
 		//Sets the orientation settings for the application
 		$.orientation({
 			initLandscape: function(){
 				view_w = 1024;
 				var di = ds["1"];
-				var img_name = di.replace(/([.])/,"-horiz$1");
-				$("<img src='"+img_name+"' />").appendTo("#ipad-views li.image:first-child");
 			},
 			initPortrait: function(){
 				view_w = 768;
-				$("<img src='"+ds["1"]+"' />").appendTo("#ipad-views li.image:first-child");
 			},
 			onLandscape: function(){
 				// change image to horizontal call
@@ -102,7 +71,24 @@ $(document).ready(function() {
 			},
 		});
 		
+		$("#loading").show();
+
+		$.each(ds, function(key,value) {
+			(view_w==1024) ? value = value.replace(/([.])/,"-horiz$1") : value = value;
+			$("<li class='image'><img src='" + value + "' /></li>").appendTo("#ipad-views");
+			$("#ipad-views li.image:last img").load(function() {
+				$("#loading").hide();
+			});
+	    });
+
+		$("<li id='back'><a class='button'>back to menu</a></li>").appendTo("#ipad-views");
+
+		// swipe movement functionality
+		var liw = $("#ipad-views li.image:first-child").width();
+		var li_count = $("#ipad-views li").length;
+		$("#ipad-views").width(li_count*liw);
 		
+		//var curr_li = 1;
 		$('.swipe').swipe({
 			threshold: {
 				x: 30,
@@ -114,8 +100,8 @@ $(document).ready(function() {
 					$("#ipad-views").animate({
 						left:'-='+view_w
 					}, 200, function() {
+						// popluate next item image
 						
-						// popluate next item image; move through error if no image exists
 						try {
 							var i = ds[curr_li];
 
@@ -166,6 +152,10 @@ $(document).ready(function() {
 
 			 }
 		
+		});
+		
+		$("#back a").click(function() {
+			location.reload();
 		});
 		
 	}

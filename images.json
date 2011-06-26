@@ -1,11 +1,6 @@
 {
+	"project" : {"title" : "Voyager Permutations"},
 	"pages" : {
-		"complete" : {
-			"images" : {
-				"1": "images/article/article-himage.png",
-				"2": "images/article/article-page2.png"
-			}
-		},
 		"article" : {
 			"images" : {
 				"1": "images/article/article-himage.png",
