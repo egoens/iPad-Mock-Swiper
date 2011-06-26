@@ -17,14 +17,7 @@ $(document).ready(function() {
 			buildButtons(data);
 			buildPages(data);
 		}
-		
-		
-		
-		//$.each(data.pages.article.images, function(){
-		//	$("<li></li>").appendTo("#ipad-views");
-	    //});
-		// setup first image
-		//buildImages(data);
+
 	});
 	
 	function buildButtons(data) {
@@ -36,7 +29,7 @@ $(document).ready(function() {
 	    });
 	
 		$(page_links).appendTo("#ipad-views li#pages");
-		//debugger;
+
 	}
 	
 	function buildPages(data) {
@@ -46,15 +39,10 @@ $(document).ready(function() {
 	
 	function setupLinks(data) {
 		$("#ipad-views li#pages a").click(function() {
-			//console.log("data: %s, this: %s",data,$(this).html());
-			
 			$("#ipad-views").empty();
 			buildImages(data,$(this).html());
-			console.log("getting here");
-			//buildButtons(data);
 		})
 	}
-	
 	
 	
 	function buildImages(data,pagename) {
@@ -68,21 +56,15 @@ $(document).ready(function() {
 		$("#loading").show();
 
 		
-		
 		$.each(ds, function(key,value){
 			$("<li class='image'><img src='" + value + "' /></li>").appendTo("#ipad-views")
 	    });
 
+		// Cheating right now. Want to re-generate list of pages and regenerate html
 		$("<li id='back'><a class='button'>back to menu</a></li>").appendTo("#ipad-views");
-		
 		$("#back a").click(function() {
 			location.reload();
 		})
-		
-		//console.log($("#ipad-views li:last"));
-		//$("#ipad-views li:last").after("<li id='pages'>"+page_links+"</li>");
-		//<li id='pages'>"+page_links+"</li>
-		//buildButtons(data);
 
 		// swipe movement functionality
 		var liw = $("#ipad-views li.image:first-child").width();
@@ -121,7 +103,6 @@ $(document).ready(function() {
 		});
 		
 		
-		//var curr_li = 1;
 		$('.swipe').swipe({
 			threshold: {
 				x: 30,
@@ -133,8 +114,8 @@ $(document).ready(function() {
 					$("#ipad-views").animate({
 						left:'-='+view_w
 					}, 200, function() {
-						// popluate next item image
 						
+						// popluate next item image; move through error if no image exists
 						try {
 							var i = ds[curr_li];
 
@@ -196,6 +177,7 @@ $(document).ready(function() {
 		
 		$("#ipad-views").css({left:"-"+(d*t)+"px"});
 		
+		try {
 		var i = $("#ipad-views li.image:eq("+(t)+") img").attr("src");
 		
 		if(d==1024) {
@@ -205,6 +187,9 @@ $(document).ready(function() {
 		}
 		
 		$("#ipad-views li.image:eq("+(t)+") img").attr({src:img_name});
+		} catch(err) {
+			return true;
+		}
 		
 	}
 	
