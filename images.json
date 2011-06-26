@@ -1,7 +1,17 @@
 {
-	"images" : {
-		"1": "path/to/image/one",
-		"2": "path/to/image/two",
-		"3": "path/to/image/three"
+	"pages" : {
+		"complete" : {
+			"images" : {
+				"1": "images/article/article-himage.png",
+				"2": "images/article/article-page2.png"
+			}
+		},
+		"article" : {
+			"images" : {
+				"1": "images/article/article-himage.png",
+				"2": "images/article/article-page2.png"
+			}
+		}
 	}
+	
 }
