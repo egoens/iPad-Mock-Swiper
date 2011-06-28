@@ -16,8 +16,11 @@ Getting Started
 * Tap icon after being added to your "Home Screen". 
 * Viewer should load in Safari with no url bar. Voila
 
+Branches
+-------
+* Use "pages" branch for allowing page declarations
+* Plan to merge this branch to master once proper conditional is put in place
+
 Future Releases & Goals
 -------
-* Add loading icon for slow load calls
-* Add Section Based views to handle larger scope projects
 * Move to structure to be device-agnostic
