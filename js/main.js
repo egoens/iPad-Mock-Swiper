@@ -43,7 +43,7 @@ $(document).ready(function() {
 	function buildImages(data,pagename) {
 				
 		if(data_source=='pages') {
-			var ds = eval("data.pages." + pagename + ".images");
+			var ds = eval("data.pages['" + pagename + "'].images");
 		} else {
 			var ds = data.images;
 		}
