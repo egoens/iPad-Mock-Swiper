@@ -5,13 +5,13 @@ $(document).ready(function() {
 	view_h = 0;
 	data_source = '';
 	page_links = '';
+	loading_content = "<section id='loading'><div id='loading_icon'><h1>Loading...</h1></div></section>";
 	
 	$.getJSON("images.json",
 
 	  function(data) {
 		if(data.pages) {
 			data_source = 'pages';
-			console.log("one call")
 			buildButtons(data);
 			buildPages(data);
 		}
@@ -71,15 +71,18 @@ $(document).ready(function() {
 			},
 		});
 		
-		$("#loading").show();
+		$("#ipad-views-wrapper").append(loading_content);
 
 		$.each(ds, function(key,value) {
 			(view_w==1024) ? value = value.replace(/([.])/,"-horiz$1") : value = value;
-			$("<li class='image'><img src='" + value + "' /></li>").appendTo("#ipad-views");
-			$("#ipad-views li.image:last img").load(function() {
-				$("#loading").hide();
-			});
+			$("<li class='image'><img src='' /></li>").appendTo("#ipad-views");
 	    });
+		
+		$("li.image:first-child").html("<img src='" + ds[1] + "' />");
+		
+		$("li.image:first-child img").load(function() {
+			$("#loading").remove();
+		})
 
 		$("<li id='back'><a class='button'>back to menu</a></li>").appendTo("#ipad-views");
 
@@ -96,12 +99,16 @@ $(document).ready(function() {
 			},
 		     swipeLeft: function() {
 				if (curr_li < li_count) {
+					
+					if(curr_li != (li_count-1)){
+						$("#ipad-views li.image:eq("+(curr_li)+")").prepend(loading_content);
+					}
 				
 					$("#ipad-views").animate({
 						left:'-='+view_w
 					}, 200, function() {
-						// popluate next item image
 						
+						// popluate next item image
 						try {
 							var i = ds[curr_li];
 
@@ -110,28 +117,32 @@ $(document).ready(function() {
 							} else {
 								var img_name = i.replace("-horiz.",".");
 							}
-					
-							if($("#ipad-views li.image:eq("+(curr_li-1)+")").html()=='') {
-								$("#loading").show();
-						    	$("<img src='"+img_name+"' />").appendTo("#ipad-views li.image:eq("+(curr_li-1)+")").load(function() {
-									$("#loading").hide();
-								});
-							} else {
-								$("#ipad-views li.image:eq("+(curr_li-1)+") img").attr({src:img_name});
-								$("#loading").hide();
-							}
+							
+							$("#ipad-views li.image:eq("+(curr_li-1)+") img").attr({src:img_name}).load(function() {
+								$("#loading").remove();
+							});
+							
+							var img_prev = $("#ipad-views li.image:eq("+(curr_li-1)+")").prev();
+							$("img",img_prev).attr({src:""});
+							
 						} catch(err) {
 							return true;
 						}
-
 				
 					});
 					curr_li += 1;
 				
 				}
+				
 			 },
 		     swipeRight: function() {
 			    if (curr_li > 1) {
+				
+					if(curr_li != 1) {
+						$("#ipad-views li.image:eq("+(curr_li-2)+")").prepend(loading_content);
+					}
+					
+					
 					$("#ipad-views").animate({
 						left:'+='+view_w
 					}, 200, function() {
@@ -144,7 +155,11 @@ $(document).ready(function() {
 							var img_name = i.replace("-horiz.",".");
 						}
 					
-						$("#ipad-views li.image:eq("+(curr_li-1)+") img").attr({src:img_name});
+						$("#ipad-views li.image:eq("+(curr_li-1)+") img").attr({src:img_name}).load(function() {
+							$("#loading").remove();
+						});
+						var img_next = $("#ipad-views li.image:eq("+(curr_li-1)+")").next();
+						$("img",img_next).attr({src:""});
 				
 					});
 					curr_li -= 1;

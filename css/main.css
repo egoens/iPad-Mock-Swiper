@@ -3,17 +3,26 @@
 
 body {background:-webkit-gradient(radial, center center, 0, center center, 70.5, from(rgb(0,114,220)), to(rgb(0,114,220)));}
 
-h1 {font-family:"League Gothic";font-size:42px;padding-bottom:10px;text-transform:uppercase;}
+h1 {
+	font-family:"League Gothic";font-size:82px;padding-bottom:10px;
+	text-transform:uppercase;color:rgb(255,255,255);text-align:center;
+	margin:50px 0 25px 0;
+}
 ul,li {margin:0;padding:0;list-style:none;}
 li {list-style:none;float:left;}
 a.button {
-	display:block;width:150px;padding:10px 20px;margin:20px auto;text-align:center;
-	font:32px/70px "League Gothic";background:rgb(0,0,0);color:rgb(255,255,255);
+	display:block;width:200px;padding:5px 20px;margin:20px auto;text-align:center;
+	font:32px/50px "League Gothic";background:rgb(0,0,0);color:rgb(255,255,255);
+	-webkit-border-radius:15px;
 }
 #ipad-views-wrapper {width:100%;height:1024px;overflow-x:hidden;position:relative;}
 #ipad-views {position:absolute;}
-#ipad-views li {width:768px;}
+#ipad-views li {width:768px;position:relative;}
 #ipad-views li img {width:100%;}
 
-#loading {width:768px;height:1024px;background:rgba(0,0,0,1);position:absolute;z-index:999;display:none;}
-#loading_icon {margin:450px auto 0 auto;width:200px;height:200px;color:#fff;text-align:center;}
+#loading {width:768px;height:1024px;background:rgba(0,0,0,1);position:absolute;z-index:999;}
+#loading_icon {margin:450px auto 0 auto;width:200px;height:200px;color:#fff;text-align:center;background:rgba(0,0,0,1);}
+
+#back a {margin-top:420px;}
+
+.empty {display:none;}
