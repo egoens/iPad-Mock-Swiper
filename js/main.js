@@ -75,7 +75,11 @@ $(document).ready(function() {
 
 		$.each(ds, function(key,value) {
 			(view_w==1024) ? value = value.replace(/([.])/,"-horiz$1") : value = value;
-			$("<li class='image'><img src='' /></li>").appendTo("#ipad-views");
+			if(key<=5){
+				$("<li class='image'><img src='"+value+"' /></li>").appendTo("#ipad-views");
+			} else {
+				$("<li class='image'><img src='' /></li>").appendTo("#ipad-views");
+			}
 	    });
 		
 		$("li.image:first-child").html("<img src='" + ds[1] + "' />");
@@ -100,9 +104,9 @@ $(document).ready(function() {
 		     swipeLeft: function() {
 				if (curr_li < li_count) {
 					
-					if(curr_li != (li_count-1)){
-						$("#ipad-views li.image:eq("+(curr_li)+")").prepend(loading_content);
-					}
+					//if(curr_li != (li_count-1)){
+					//	$("#ipad-views li.image:eq("+(curr_li)+")").prepend(loading_content);
+					//}
 				
 					$("#ipad-views").animate({
 						left:'-='+view_w
@@ -110,59 +114,92 @@ $(document).ready(function() {
 						
 						// popluate next item image
 						try {
-							var i = ds[curr_li];
+							if((curr_li+4)<li_count) {
+								var i = ds[curr_li+4];
 
-							if(view_w==1024) {
-								var img_name = i.replace(/([.])/,"-horiz$1");
-							} else {
-								var img_name = i.replace("-horiz.",".");
+								if(view_w==1024) {
+									var img_name = i.replace(/([.])/,"-horiz$1");
+								} else {
+									var img_name = i.replace("-horiz.",".");
+								}
+								
+								//alert("curr_li: "+(curr_li+4)+"img: "+img_name);
+							
+						
+								$("#ipad-views li.image:eq("+(curr_li+3)+") img").attr({src:img_name});
+								//alert($("#ipad-views li.image:eq("+(curr_li+4)+")").html());
+								//alert($("#ipad-views").html());
 							}
 							
-							$("#ipad-views li.image:eq("+(curr_li-1)+") img").attr({src:img_name}).load(function() {
-								$("#loading").remove();
-							});
-							
-							var img_prev = $("#ipad-views li.image:eq("+(curr_li-1)+")").prev();
-							$("img",img_prev).attr({src:""});
+							if((curr_li-4)>0) {
+								var img_prev = $("#ipad-views li.image:eq("+(curr_li-5)+")").prev();
+								$("img",img_prev).attr({src:""});
+								//alert($("#ipad-views").html());
+							}
 							
 						} catch(err) {
 							return true;
 						}
 				
 					});
-					curr_li += 1;
-				
+					curr_li++;
+					//if(curr_li==li_count){ alert($("#ipad-views").html());}
 				}
 				
 			 },
 		     swipeRight: function() {
 			    if (curr_li > 1) {
 				
-					if(curr_li != 1) {
-						$("#ipad-views li.image:eq("+(curr_li-2)+")").prepend(loading_content);
-					}
+					//alert($("#ipad-views").html());
+
+					//if(curr_li != 1) {
+					//	$("#ipad-views li.image:eq("+(curr_li-2)+")").prepend(loading_content);
+					//}
 					
 					
 					$("#ipad-views").animate({
 						left:'+='+view_w
 					}, 200, function() {
 						// Animation complete.
-						var i = ds[curr_li];
+						try {
+							var i = ds[curr_li-4];
+							//alert(i);
 
-						if(view_w==1024) {
-							var img_name = i.replace(/([.])/,"-horiz$1");
-						} else {
-							var img_name = i.replace("-horiz.",".");
-						}
+							if(view_w==1024) {
+								var img_name = i.replace(/([.])/,"-horiz$1");
+							} else {
+								var img_name = i.replace("-horiz.",".");
+							}
 					
-						$("#ipad-views li.image:eq("+(curr_li-1)+") img").attr({src:img_name}).load(function() {
-							$("#loading").remove();
-						});
-						var img_next = $("#ipad-views li.image:eq("+(curr_li-1)+")").next();
-						$("img",img_next).attr({src:""});
+							//$("#ipad-views li.image:eq("+(curr_li-1)+") img").attr({src:img_name}).load(function() {
+							//	$("#loading").remove();
+							//});
+							//var img_next = $("#ipad-views li.image:eq("+(curr_li-1)+")").next();
+							//$("img",img_next).attr({src:""});
+							
+							$("#ipad-views li.image:eq("+(curr_li-5)+") img").attr({src:img_name});
+						
+							if((curr_li-4)>0) {
+								//alert("image_range_l: "+image_range_l+",image_range_r: "+image_range_r);
+								//alert(image_range_l);
+								//alert($("#ipad-views li.image:eq("+(image_range_l)+") img").attr("src"));
+
+								
+								
+							}
+						
+							if((curr_li+4)<li_count) {
+								var img_right = $("#ipad-views li.image:eq("+(curr_li+4)+")");
+								$("img",img_right).attr({src:""});
+								//alert($("#ipad-views").html());
+							}
+						} catch(err) {
+							return true;
+						}
 				
 					});
 					curr_li -= 1;
+					//alert("cu: "+curr_li+",swipe_l: "+swipe_l);
 				}
 
 			 }
