@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
 	
 	curr_li = 1;
@@ -5,7 +6,9 @@ $(document).ready(function() {
 	view_h = 0;
 	data_source = '';
 	page_links = '';
-	loading_content = "<section id='loading'><div id='loading_icon'><h1>Loading...</h1></div></section>";
+	loading_content = "<section class='loading'><div class='loading_icon'><h1>Loading...</h1></div></section>";
+	// set adjacent img distance (# of images left & right of current li to load while swiping)
+	adj = 2;
 	
 	$.getJSON("images.json",
 
@@ -19,6 +22,7 @@ $(document).ready(function() {
 	});
 	
 	function buildButtons(data) {
+		$("#ipad-views-wrapper").append(loading_content);
 		$("<li><h1>"+data.project["title"]+"</h1></li>").appendTo("#ipad-views");
 		$("<li id='pages'></li>").appendTo("#ipad-views");
 		
@@ -27,6 +31,7 @@ $(document).ready(function() {
 	    });
 	
 		$(page_links).appendTo("#ipad-views li#pages");
+		$(".loading").remove();
 	}
 	
 	function buildPages(data) {
@@ -75,17 +80,15 @@ $(document).ready(function() {
 
 		$.each(ds, function(key,value) {
 			(view_w==1024) ? value = value.replace(/([.])/,"-horiz$1") : value = value;
-			if(key<=5){
+			if(key<4) {
 				$("<li class='image'><img src='"+value+"' /></li>").appendTo("#ipad-views");
 			} else {
 				$("<li class='image'><img src='' /></li>").appendTo("#ipad-views");
 			}
 	    });
 		
-		$("li.image:first-child").html("<img src='" + ds[1] + "' />");
-		
-		$("li.image:first-child img").load(function() {
-			$("#loading").remove();
+		$("li.image:eq("+adj+") img").load(function() {
+			$(".loading").remove();
 		})
 
 		$("<li id='back'><a class='button'>back to menu</a></li>").appendTo("#ipad-views");
@@ -103,103 +106,33 @@ $(document).ready(function() {
 			},
 		     swipeLeft: function() {
 				if (curr_li < li_count) {
-					
-					//if(curr_li != (li_count-1)){
-					//	$("#ipad-views li.image:eq("+(curr_li)+")").prepend(loading_content);
-					//}
 				
 					$("#ipad-views").animate({
 						left:'-='+view_w
 					}, 200, function() {
 						
-						// popluate next item image
-						try {
-							if((curr_li+4)<li_count) {
-								var i = ds[curr_li+4];
-
-								if(view_w==1024) {
-									var img_name = i.replace(/([.])/,"-horiz$1");
-								} else {
-									var img_name = i.replace("-horiz.",".");
-								}
-								
-								//alert("curr_li: "+(curr_li+4)+"img: "+img_name);
-							
-						
-								$("#ipad-views li.image:eq("+(curr_li+3)+") img").attr({src:img_name});
-								//alert($("#ipad-views li.image:eq("+(curr_li+4)+")").html());
-								//alert($("#ipad-views").html());
-							}
-							
-							if((curr_li-4)>0) {
-								var img_prev = $("#ipad-views li.image:eq("+(curr_li-5)+")").prev();
-								$("img",img_prev).attr({src:""});
-								//alert($("#ipad-views").html());
-							}
-							
-						} catch(err) {
-							return true;
-						}
+						getAdjacentImages(ds,curr_li,"left",view_w);
 				
 					});
-					curr_li++;
-					//if(curr_li==li_count){ alert($("#ipad-views").html());}
+					curr_li += 1;
+				
 				}
 				
 			 },
 		     swipeRight: function() {
 			    if (curr_li > 1) {
-				
-					//alert($("#ipad-views").html());
 
-					//if(curr_li != 1) {
-					//	$("#ipad-views li.image:eq("+(curr_li-2)+")").prepend(loading_content);
-					//}
-					
 					
 					$("#ipad-views").animate({
 						left:'+='+view_w
 					}, 200, function() {
 						// Animation complete.
-						try {
-							var i = ds[curr_li-4];
-							//alert(i);
+						var i = ds[curr_li];
 
-							if(view_w==1024) {
-								var img_name = i.replace(/([.])/,"-horiz$1");
-							} else {
-								var img_name = i.replace("-horiz.",".");
-							}
-					
-							//$("#ipad-views li.image:eq("+(curr_li-1)+") img").attr({src:img_name}).load(function() {
-							//	$("#loading").remove();
-							//});
-							//var img_next = $("#ipad-views li.image:eq("+(curr_li-1)+")").next();
-							//$("img",img_next).attr({src:""});
-							
-							$("#ipad-views li.image:eq("+(curr_li-5)+") img").attr({src:img_name});
-						
-							if((curr_li-4)>0) {
-								//alert("image_range_l: "+image_range_l+",image_range_r: "+image_range_r);
-								//alert(image_range_l);
-								//alert($("#ipad-views li.image:eq("+(image_range_l)+") img").attr("src"));
-
-								
-								
-							}
-						
-							if((curr_li+4)<li_count) {
-								var img_right = $("#ipad-views li.image:eq("+(curr_li+4)+")");
-								$("img",img_right).attr({src:""});
-								//alert($("#ipad-views").html());
-							}
-						} catch(err) {
-							return true;
-						}
+						getAdjacentImages(ds,curr_li,"right",view_w);
 				
 					});
 					curr_li -= 1;
-					//alert("cu: "+curr_li+",swipe_l: "+swipe_l);
 				}
 
 			 }
@@ -212,6 +145,59 @@ $(document).ready(function() {
 		
 	}
 	
+	function getAdjacentImages(ds,curr_li,dir,view_w) {
+		var bi = curr_li-adj;
+		var fi = curr_li+adj;
+		var ni = fi-1;
+		var pi = bi+1;
+		$("#ipad-views li.image:lt("+bi+") img").attr({src:""});
+		$("#ipad-views li.image:gt("+fi+") img").attr({src:""});
+		
+		if(dir=="left"){
+			try {
+				var img= ds[ni];
+			
+				if(view_w==1024) {
+					var img_name = img.replace(/([.])/,"-horiz$1");
+				} else {
+					var img_name = img.replace("-horiz.",".");
+				}
+				
+				$("#ipad-views li.image:eq("+(ni-1)+")").prepend(loading_content);
+				$("#ipad-views li.image:eq("+(ni-1)+") img").attr({src:img_name});
+				$("#ipad-views li.image:eq("+(ni-1)+") img").load(function() {
+					$(".loading").remove();
+				});
+
+				
+			} catch(err) {
+				return true;
+			}
+		} else {
+			try{
+				var img= ds[pi];
+			
+				if(view_w==1024) {
+					var img_name = img.replace(/([.])/,"-horiz$1");
+				} else {
+					var img_name = img.replace("-horiz.",".");
+				}
+				
+				$("#ipad-views li.image:eq("+(pi-1)+")").prepend(loading_content);
+				$("#ipad-views li.image:eq("+(pi-1)+") img").attr({src:img_name});
+				$("#ipad-views li.image:eq("+(pi-1)+") img").load(function() {
+					$(".loading").remove();
+				});
+				
+			} catch(err) {
+				return true;
+			}
+			
+		}
+		
+		
+	}
+	
 	function resize(d,t) {
 		
 		var li_count = $("#ipad-views li").length;
@@ -220,15 +206,15 @@ $(document).ready(function() {
 		$("#ipad-views").css({left:"-"+(d*t)+"px"});
 		
 		try {
-		var i = $("#ipad-views li.image:eq("+(t)+") img").attr("src");
+			var img = $("#ipad-views li.image:eq("+(t)+") img").attr("src");
 		
-		if(d==1024) {
-			var img_name = i.replace(/([.])/,"-horiz$1");
-		} else {
-			var img_name = i.replace("-horiz.",".");
-		}
+			if(d==1024) {
+				var img_name = img.replace(/([.])/,"-horiz$1");
+			} else {
+				var img_name = img.replace("-horiz.",".");
+			}
 		
-		$("#ipad-views li.image:eq("+(t)+") img").attr({src:img_name});
+			$("#ipad-views li.image:eq("+(t)+") img").attr({src:img_name});
 		} catch(err) {
 			return true;
 		}
