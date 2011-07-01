@@ -66,13 +66,13 @@ $(document).ready(function() {
 				// change image to horizontal call
 				view_w = 1024;
 				var this_li = curr_li-1;
-				resize(view_w,this_li);
+				resize(view_w,this_li,ds);
 			},
 			onPortrait: function(){
 				// change image to portrait call
 				view_w = 768;
 				var this_li = curr_li-1;
-				resize(view_w,this_li);
+				resize(view_w,this_li,ds);
 			},
 		});
 		
@@ -86,10 +86,6 @@ $(document).ready(function() {
 				$("<li class='image'><img src='' /></li>").appendTo("#ipad-views");
 			}
 	    });
-		
-		$("li.image:eq("+adj+") img").load(function() {
-			$(".loading").remove();
-		})
 
 		$("<li id='back'><a class='button'>back to menu</a></li>").appendTo("#ipad-views");
 
@@ -97,6 +93,16 @@ $(document).ready(function() {
 		var liw = $("#ipad-views li.image:first-child").width();
 		var li_count = $("#ipad-views li").length;
 		$("#ipad-views").width(li_count*liw);
+				
+		if((li_count)>adj+1) {
+			$("li.image:eq("+adj+") img").load(function() {
+				$(".loading").remove();
+			});
+		} else {
+			$("li.image:eq(0) img").load(function() {
+				$(".loading").remove();
+			});
+		}
 		
 		//var curr_li = 1;
 		$('.swipe').swipe({
@@ -115,26 +121,21 @@ $(document).ready(function() {
 				
 					});
 					curr_li += 1;
-				
 				}
 				
 			 },
 		     swipeRight: function() {
 			    if (curr_li > 1) {
 
-					
 					$("#ipad-views").animate({
 						left:'+='+view_w
 					}, 200, function() {
-						// Animation complete.
-						var i = ds[curr_li];
 
 						getAdjacentImages(ds,curr_li,"right",view_w);
 				
 					});
 					curr_li -= 1;
 				}
-
 			 }
 		
 		});
@@ -195,25 +196,24 @@ $(document).ready(function() {
 			
 		}
 		
-		
 	}
 	
-	function resize(d,t) {
+	function resize(d,t,ds) {
 		
 		var li_count = $("#ipad-views li").length;
 		$("#ipad-views").width((li_count*d)+"px");
 		
 		$("#ipad-views").css({left:"-"+(d*t)+"px"});
-		
-		try {
+
+		try {	
 			var img = $("#ipad-views li.image:eq("+(t)+") img").attr("src");
-		
+	
 			if(d==1024) {
 				var img_name = img.replace(/([.])/,"-horiz$1");
 			} else {
 				var img_name = img.replace("-horiz.",".");
 			}
-		
+	
 			$("#ipad-views li.image:eq("+(t)+") img").attr({src:img_name});
 		} catch(err) {
 			return true;
