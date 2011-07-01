@@ -20,8 +20,8 @@ a.button {
 #ipad-views li {width:768px;position:relative;}
 #ipad-views li img {width:100%;}
 
-#loading {width:768px;height:1024px;background:rgba(0,0,0,1);position:absolute;z-index:999;}
-#loading_icon {margin:450px auto 0 auto;width:200px;height:200px;color:#fff;text-align:center;background:rgba(0,0,0,1);}
+.loading {width:768px;height:1024px;background:rgba(0,0,0,1);position:absolute;z-index:999;}
+.loading_icon {margin:450px auto 0 auto;width:200px;height:200px;color:#fff;text-align:center;background:rgba(0,0,0,1);}
 
 #back a {margin-top:420px;}
 

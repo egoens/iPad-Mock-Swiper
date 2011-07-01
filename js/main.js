@@ -21,8 +21,17 @@ $(document).ready(function() {
 
 	});
 	
+	function iScrollInit() {
+		var myScroll = new iScroll('ipad-views-wrapper', { 
+			snap: "li",
+			momentum: false,
+			hScrollbar: false,
+			vScrollbar: false,
+			vScroll: false
+		});
+	}
+	
 	function buildButtons(data) {
-		$("#ipad-views-wrapper").append(loading_content);
 		$("<li><h1>"+data.project["title"]+"</h1></li>").appendTo("#ipad-views");
 		$("<li id='pages'></li>").appendTo("#ipad-views");
 		
@@ -31,7 +40,6 @@ $(document).ready(function() {
 	    });
 	
 		$(page_links).appendTo("#ipad-views li#pages");
-		$(".loading").remove();
 	}
 	
 	function buildPages(data) {
@@ -104,7 +112,10 @@ $(document).ready(function() {
 			});
 		}
 		
-		//var curr_li = 1;
+		iScrollInit();
+		
+		
+		var curr_li = 1;
 		$('.swipe').swipe({
 			threshold: {
 				x: 30,
@@ -113,27 +124,17 @@ $(document).ready(function() {
 		     swipeLeft: function() {
 				if (curr_li < li_count) {
 				
-					$("#ipad-views").animate({
-						left:'-='+view_w
-					}, 200, function() {
-						
-						getAdjacentImages(ds,curr_li,"left",view_w);
+					getAdjacentImages(ds,curr_li,"left",view_w);
 				
-					});
 					curr_li += 1;
 				}
 				
 			 },
 		     swipeRight: function() {
 			    if (curr_li > 1) {
-
-					$("#ipad-views").animate({
-						left:'+='+view_w
-					}, 200, function() {
-
-						getAdjacentImages(ds,curr_li,"right",view_w);
+        
+					getAdjacentImages(ds,curr_li,"right",view_w);
 				
-					});
 					curr_li -= 1;
 				}
 			 }
@@ -163,12 +164,8 @@ $(document).ready(function() {
 				} else {
 					var img_name = img.replace("-horiz.",".");
 				}
-				
-				$("#ipad-views li.image:eq("+(ni-1)+")").prepend(loading_content);
+
 				$("#ipad-views li.image:eq("+(ni-1)+") img").attr({src:img_name});
-				$("#ipad-views li.image:eq("+(ni-1)+") img").load(function() {
-					$(".loading").remove();
-				});
 
 				
 			} catch(err) {
@@ -184,11 +181,7 @@ $(document).ready(function() {
 					var img_name = img.replace("-horiz.",".");
 				}
 				
-				$("#ipad-views li.image:eq("+(pi-1)+")").prepend(loading_content);
 				$("#ipad-views li.image:eq("+(pi-1)+") img").attr({src:img_name});
-				$("#ipad-views li.image:eq("+(pi-1)+") img").load(function() {
-					$(".loading").remove();
-				});
 				
 			} catch(err) {
 				return true;
@@ -200,21 +193,28 @@ $(document).ready(function() {
 	
 	function resize(d,t,ds) {
 		
-		var li_count = $("#ipad-views li").length;
-		$("#ipad-views").width((li_count*d)+"px");
+		//iScrollInit();
 		
-		$("#ipad-views").css({left:"-"+(d*t)+"px"});
+		myScroll.scrollToElement($("#ipad-views li.image:eq("+(t)+")"), 200);
+		
+		//var li_count = $("#ipad-views li").length;
+		//$("#ipad-views").width((li_count*d)+"px");
+		
+		//$("#ipad-views").css({left:"-"+(d*t)+"px"});
 
-		try {	
-			var img = $("#ipad-views li.image:eq("+(t)+") img").attr("src");
-	
-			if(d==1024) {
-				var img_name = img.replace(/([.])/,"-horiz$1");
-			} else {
-				var img_name = img.replace("-horiz.",".");
-			}
-	
-			$("#ipad-views li.image:eq("+(t)+") img").attr({src:img_name});
+		try {
+			$("#ipad-views li.image").each(function() {
+				var img = $("img",this).attr("src");
+
+				if(d==1024) {
+					var img_name = img.replace(/([.])/,"-horiz$1");
+				} else {
+					var img_name = img.replace("-horiz.",".");
+				}
+
+				$("#ipad-views li.image:eq("+(t)+") img").attr({src:img_name});
+			})
+			
 		} catch(err) {
 			return true;
 		}
