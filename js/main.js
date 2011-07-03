@@ -4,11 +4,15 @@ $(document).ready(function() {
 	curr_li = 1;
 	view_w = 0;
 	view_h = 0;
+	view_w = ''
+	ul_w = '';
+	li_count = '';
 	data_source = '';
 	page_links = '';
 	loading_content = "<section class='loading'><div class='loading_icon'><h1>Loading...</h1></div></section>";
 	// set adjacent img distance (# of images left & right of current li to load while swiping)
 	adj = 2;
+	var myScroll;
 	
 	$.getJSON("images.json",
 
@@ -22,13 +26,20 @@ $(document).ready(function() {
 	});
 	
 	function iScrollInit() {
-		var myScroll = new iScroll('ipad-views-wrapper', { 
-			snap: "li",
-			momentum: false,
-			hScrollbar: false,
-			vScrollbar: false,
-			vScroll: false
-		});
+		
+		if(typeof(myScroll) !== 'undefined'){
+			myScroll.refresh();
+			//onCompletion();
+		}else{
+			myScroll = new iScroll('ipad-views-wrapper', { 
+				snap: "li",
+				momentum: false,
+				hScrollbar: false,
+				vScrollbar: false,
+				vScroll: false
+			});
+		}
+		
 	}
 	
 	function buildButtons(data) {
@@ -65,7 +76,7 @@ $(document).ready(function() {
 		$.orientation({
 			initLandscape: function(){
 				view_w = 1024;
-				var di = ds["1"];
+				//var di = ds["1"];
 			},
 			initPortrait: function(){
 				view_w = 768;
@@ -82,25 +93,22 @@ $(document).ready(function() {
 				var this_li = curr_li-1;
 				resize(view_w,this_li,ds);
 			},
-		});
+		})
 		
 		$("#ipad-views-wrapper").append(loading_content);
 
 		$.each(ds, function(key,value) {
 			(view_w==1024) ? value = value.replace(/([.])/,"-horiz$1") : value = value;
-			if(key<4) {
-				$("<li class='image'><img src='"+value+"' /></li>").appendTo("#ipad-views");
-			} else {
-				$("<li class='image'><img src='' /></li>").appendTo("#ipad-views");
-			}
+			$("<li class='image'><img src='"+value+"' /></li>").appendTo("#ipad-views");
 	    });
 
 		$("<li id='back'><a class='button'>back to menu</a></li>").appendTo("#ipad-views");
 
 		// swipe movement functionality
 		var liw = $("#ipad-views li.image:first-child").width();
-		var li_count = $("#ipad-views li").length;
+		li_count = $("#ipad-views li").length;
 		$("#ipad-views").width(li_count*liw);
+		ul_w = $("#ipad-views").width(li_count*liw);
 				
 		if((li_count)>adj+1) {
 			$("li.image:eq("+adj+") img").load(function() {
@@ -113,9 +121,7 @@ $(document).ready(function() {
 		}
 		
 		iScrollInit();
-		
-		
-		var curr_li = 1;
+
 		$('.swipe').swipe({
 			threshold: {
 				x: 30,
@@ -123,21 +129,16 @@ $(document).ready(function() {
 			},
 		     swipeLeft: function() {
 				if (curr_li < li_count) {
-				
-					getAdjacentImages(ds,curr_li,"left",view_w);
-				
 					curr_li += 1;
 				}
 				
 			 },
 		     swipeRight: function() {
 			    if (curr_li > 1) {
-        
-					getAdjacentImages(ds,curr_li,"right",view_w);
-				
 					curr_li -= 1;
 				}
 			 }
+			
 		
 		});
 		
@@ -147,78 +148,33 @@ $(document).ready(function() {
 		
 	}
 	
-	function getAdjacentImages(ds,curr_li,dir,view_w) {
-		var bi = curr_li-adj;
-		var fi = curr_li+adj;
-		var ni = fi-1;
-		var pi = bi+1;
-		$("#ipad-views li.image:lt("+bi+") img").attr({src:""});
-		$("#ipad-views li.image:gt("+fi+") img").attr({src:""});
-		
-		if(dir=="left"){
-			try {
-				var img= ds[ni];
-			
-				if(view_w==1024) {
-					var img_name = img.replace(/([.])/,"-horiz$1");
-				} else {
-					var img_name = img.replace("-horiz.",".");
-				}
-
-				$("#ipad-views li.image:eq("+(ni-1)+") img").attr({src:img_name});
-
-				
-			} catch(err) {
-				return true;
-			}
-		} else {
-			try{
-				var img= ds[pi];
-			
-				if(view_w==1024) {
-					var img_name = img.replace(/([.])/,"-horiz$1");
-				} else {
-					var img_name = img.replace("-horiz.",".");
-				}
-				
-				$("#ipad-views li.image:eq("+(pi-1)+") img").attr({src:img_name});
-				
-			} catch(err) {
-				return true;
-			}
-			
-		}
-		
-	}
-	
 	function resize(d,t,ds) {
 		
-		//iScrollInit();
-		
-		myScroll.scrollToElement($("#ipad-views li.image:eq("+(t)+")"), 200);
-		
-		//var li_count = $("#ipad-views li").length;
-		//$("#ipad-views").width((li_count*d)+"px");
-		
-		//$("#ipad-views").css({left:"-"+(d*t)+"px"});
+		$("#ipad-views-wrapper").append(loading_content);
+		setTimeout(function () {
+			$(".loading").remove();
+		}, 500);
 
-		try {
-			$("#ipad-views li.image").each(function() {
-				var img = $("img",this).attr("src");
+		$("#ipad-views li.image img").each(function() {
+			var img = $(this).attr("src");
 
-				if(d==1024) {
-					var img_name = img.replace(/([.])/,"-horiz$1");
-				} else {
-					var img_name = img.replace("-horiz.",".");
-				}
+			if(d==1024) {
+				var img_name = img.replace(/([.])/,"-horiz$1");
+			} else {
+				var img_name = img.replace("-horiz.",".");
+			}
 
-				$("#ipad-views li.image:eq("+(t)+") img").attr({src:img_name});
-			})
-			
-		} catch(err) {
-			return true;
-		}
+			$(this).attr({src:img_name});
+			//alert($(this).attr("src"));
+		});
+		console.log(t+1)
+		myScroll.scrollToElement("li:nth-child("+(t+1)+")", 0);
 		
+		var liw = $("#ipad-views li.image:first-child").width();
+		ul_w = $("#ipad-views").width(li_count*liw);
+
 	}
+	
+	window.addEventListener('load', iScrollInit, false);
 	
 });
