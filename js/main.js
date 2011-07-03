@@ -12,7 +12,7 @@ $(document).ready(function() {
 	loading_content = "<section class='loading'><div class='loading_icon'><h1>Loading...</h1></div></section>";
 	// set adjacent img distance (# of images left & right of current li to load while swiping)
 	adj = 2;
-	var myScroll;
+	//var myScroll;
 	
 	$.getJSON("images.json",
 
@@ -24,6 +24,8 @@ $(document).ready(function() {
 		}
 
 	});
+	
+	
 	
 	function iScrollInit() {
 		
@@ -65,7 +67,9 @@ $(document).ready(function() {
 	}
 	
 	function buildImages(data,pagename) {
-				
+		
+		$("body").addClass("images");
+		
 		if(data_source=='pages') {
 			var ds = eval("data.pages['" + pagename + "'].images");
 		} else {
@@ -85,13 +89,13 @@ $(document).ready(function() {
 				// change image to horizontal call
 				view_w = 1024;
 				var this_li = curr_li-1;
-				resize(view_w,this_li,ds);
+				resize(view_w);
 			},
 			onPortrait: function(){
 				// change image to portrait call
 				view_w = 768;
 				var this_li = curr_li-1;
-				resize(view_w,this_li,ds);
+				resize(view_w);
 			},
 		})
 		
@@ -121,39 +125,19 @@ $(document).ready(function() {
 		}
 		
 		iScrollInit();
-
-		$('.swipe').swipe({
-			threshold: {
-				x: 30,
-				y: 100
-			},
-		     swipeLeft: function() {
-				if (curr_li < li_count) {
-					curr_li += 1;
-				}
-				
-			 },
-		     swipeRight: function() {
-			    if (curr_li > 1) {
-					curr_li -= 1;
-				}
-			 }
-			
-		
-		});
 		
 		$("#back a").click(function() {
+			$("body").removeClass("images");
+			myScroll.destroy();
 			location.reload();
 		});
 		
 	}
-	
-	function resize(d,t,ds) {
+
+	function resize(d) {
 		
+		// hack in laoding animation to fake call back
 		$("#ipad-views-wrapper").append(loading_content);
-		setTimeout(function () {
-			$(".loading").remove();
-		}, 500);
 
 		$("#ipad-views li.image img").each(function() {
 			var img = $(this).attr("src");
@@ -165,13 +149,19 @@ $(document).ready(function() {
 			}
 
 			$(this).attr({src:img_name});
-			//alert($(this).attr("src"));
+
 		});
-		console.log(t+1)
-		myScroll.scrollToElement("li:nth-child("+(t+1)+")", 0);
 		
 		var liw = $("#ipad-views li.image:first-child").width();
 		ul_w = $("#ipad-views").width(li_count*liw);
+
+		setTimeout(function () {
+			
+			myScroll.scrollToPage(myScroll.currPageX, 0, 0);
+			$(".loading").remove();
+		}, 1000);
+		
+		myScroll.refresh();
 
 	}
 	

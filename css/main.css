@@ -2,6 +2,7 @@
 @font-face { font-family: "League Gothic"; src: url('LeagueGothic.otf'); } 
 
 body {background:-webkit-gradient(radial, center center, 0, center center, 70.5, from(rgb(0,114,220)), to(rgb(0,114,220)));}
+body.images {background:rgb(0,0,0);}
 
 h1 {
 	font-family:"League Gothic";font-size:82px;padding-bottom:10px;
@@ -20,6 +21,7 @@ a.button {
 #ipad-views li {width:768px;position:relative;}
 #ipad-views li.image {width:768px;height:1024px;}
 #ipad-views li img {width:100%;}
+#ipad-views li:last-child {background:rgb(0,114,220);height:1024px;}
 
 .loading {width:768px;height:1024px;background:rgba(0,0,0,1);position:absolute;z-index:999;}
 .loading_icon {margin:450px auto 0 auto;width:200px;height:200px;color:#fff;text-align:center;background:rgba(0,0,0,1);}
