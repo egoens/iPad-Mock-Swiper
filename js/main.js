@@ -22,10 +22,7 @@ $(document).ready(function() {
 			buildButtons(data);
 			buildPages(data);
 		}
-
 	});
-	
-	
 	
 	function iScrollInit() {
 		
@@ -136,6 +133,9 @@ $(document).ready(function() {
 
 	function resize(d) {
 		
+		var liw = $("#ipad-views li.image:first-child").width();
+		ul_w = $("#ipad-views").width(li_count*liw);
+		
 		// hack in laoding animation to fake call back
 		$("#ipad-views-wrapper").append(loading_content);
 
@@ -147,21 +147,16 @@ $(document).ready(function() {
 			} else {
 				var img_name = img.replace("-horiz.",".");
 			}
-
 			$(this).attr({src:img_name});
-
 		});
-		
-		var liw = $("#ipad-views li.image:first-child").width();
-		ul_w = $("#ipad-views").width(li_count*liw);
 
 		setTimeout(function () {
-			
 			myScroll.scrollToPage(myScroll.currPageX, 0, 0);
-			$(".loading").remove();
-		}, 1000);
+		}, 0);
 		
-		myScroll.refresh();
+		setTimeout(function () {
+			$(".loading").remove();
+		}, 3000);
 
 	}
 	

@@ -3,6 +3,7 @@ h1 {margin:25px 0 15px 0;}
 #ipad-views-wrapper {width:1024px;height:768px;overflow-x:hidden;position:relative;}
 #ipad-views li {width:1024px;}
 #ipad-views li.image {width:1024px;height:768px;}
+#ipad-views li:last-child {height:768px;}
 
 /* Loading */
 .loading {width:1024px;height:768px;}
